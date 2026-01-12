@@ -1,0 +1,125 @@
+### TOTP PoC API - Complete Example Flow
+### This file demonstrates the complete TOTP setup and login flow
+
+@baseUrl = http://localhost:3000
+@apiUrl = {{baseUrl}}/api
+
+###
+### Step 1: Register a new user
+###
+POST {{apiUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "SecurePass123"
+}
+
+### Save the token from the response above to use in the next requests
+### Update @token variable with the token value
+
+###
+### Step 2: Login (if you already have an account)
+###
+POST {{apiUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "SecurePass123"
+}
+
+### Save the token from the response above
+### If TOTP is enabled, you'll get a tokenKey instead - use that for Step 7
+
+###
+### Step 3: Setup TOTP
+### Replace {{token}} with the actual token from Step 1 or 2
+###
+POST {{apiUrl}}/totp/setup
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Save the secret, qrCode, and backupCodes from the response
+### Decode the qrCode and scan it with your authenticator app
+
+###
+### Step 4: Verify TOTP code during setup
+### Get the 6-digit code from your authenticator app
+### Replace {{token}} and {{totpCode}} with actual values
+###
+POST {{apiUrl}}/totp/verify
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "totpCode": "123456"
+}
+
+###
+### Step 5: Enable TOTP
+### Use the same TOTP code from your authenticator app
+###
+POST {{apiUrl}}/totp/enable
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "totpCode": "123456"
+}
+
+###
+### Step 6: Check TOTP status
+###
+GET {{apiUrl}}/totp/status
+Authorization: Bearer YOUR_TOKEN_HERE
+
+###
+### Step 7: Login with 2FA (when TOTP is enabled)
+###
+
+### Step 7a: Login (returns tokenKey)
+POST {{apiUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "SecurePass123"
+}
+
+### Save the tokenKey from the response above
+
+### Step 7b: Complete 2FA login
+### Replace {{tokenKey}} and {{totpCode}} with actual values
+POST {{apiUrl}}/auth/login-2fa
+Content-Type: application/json
+
+{
+  "tokenKey": "YOUR_TOKEN_KEY_HERE",
+  "totpCode": "123456"
+}
+
+### Save the token from the response for authenticated requests
+
+###
+### Additional TOTP Management
+###
+
+### Disable TOTP
+POST {{apiUrl}}/totp/disable
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "password": "SecurePass123"
+}
+
+### Regenerate backup codes
+POST {{apiUrl}}/totp/backup-codes
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "password": "SecurePass123"
+}
+

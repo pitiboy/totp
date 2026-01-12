@@ -1,0 +1,100 @@
+### TOTP PoC API Requests
+### Base URL and Variables
+@baseUrl = http://localhost:3000
+@apiUrl = {{baseUrl}}/api
+
+### Variables (update these as needed)
+@username = johndoe
+@email = john@example.com
+@password = SecurePass123
+@token = 
+@tokenKey = 
+@totpCode = 123456
+
+###
+### Authentication Endpoints
+###
+
+### Register a new user
+POST {{apiUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Login (returns token if TOTP not enabled, or tokenKey if TOTP enabled)
+POST {{apiUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+### Complete 2FA Login (use tokenKey from login response)
+POST {{apiUrl}}/auth/login-2fa
+Content-Type: application/json
+
+{
+  "tokenKey": "{{tokenKey}}",
+  "totpCode": "{{totpCode}}"
+}
+
+###
+### TOTP Management Endpoints (require authentication)
+###
+
+### Setup TOTP (generates secret, QR code, and backup codes)
+POST {{apiUrl}}/totp/setup
+Authorization: Bearer {{token}}
+
+### Verify TOTP code during setup
+POST {{apiUrl}}/totp/verify
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "totpCode": "{{totpCode}}"
+}
+
+### Enable TOTP (requires verified code from setup)
+POST {{apiUrl}}/totp/enable
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "totpCode": "{{totpCode}}"
+}
+
+### Get TOTP status
+GET {{apiUrl}}/totp/status
+Authorization: Bearer {{token}}
+
+### Disable TOTP (requires password confirmation)
+POST {{apiUrl}}/totp/disable
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "password": "{{password}}"
+}
+
+### Regenerate backup codes (requires password)
+POST {{apiUrl}}/totp/backup-codes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "password": "{{password}}"
+}
+
+###
+### Health Check
+###
+
+### Health check endpoint
+GET {{baseUrl}}/health
+
