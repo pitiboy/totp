@@ -31,9 +31,14 @@ api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ApiError>) => {
     if (error.response?.status === 401) {
-      // Unauthorized - clear storage and redirect to login
-      storage.clear();
-      window.location.href = '/login';
+      // Only logout on 401 if it's not a password validation error
+      // Password validation errors should return 400, but handle 401 gracefully
+      const errorMessage = (error.response?.data as ApiError)?.message?.toLowerCase() || '';
+      if (!errorMessage.includes('invalid password') && !errorMessage.includes('password')) {
+        // Unauthorized - clear storage and redirect to login
+        storage.clear();
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

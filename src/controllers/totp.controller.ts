@@ -105,7 +105,7 @@ export class TotpController {
       // Verify password
       const isValid = await AuthService.verifyUserPassword(req.user.id, password);
       if (!isValid) {
-        res.status(401).json({ message: 'Invalid password', success: false });
+        res.status(400).json({ message: 'Invalid password', success: false });
         return;
       }
 
@@ -159,7 +159,7 @@ export class TotpController {
       // Verify password
       const isValid = await AuthService.verifyUserPassword(req.user.id, password);
       if (!isValid) {
-        res.status(401).json({ message: 'Invalid password' });
+        res.status(400).json({ message: 'Invalid password' });
         return;
       }
 

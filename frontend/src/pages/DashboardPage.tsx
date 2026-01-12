@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { TotpStatus } from '../components/totp/TotpStatus';
 import { Button } from '../components/common/Button';
@@ -6,6 +7,15 @@ import { Card } from '../components/common/Card';
 
 export const DashboardPage = () => {
   const { user } = useAuth();
+  const location = useLocation();
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Force refresh TotpStatus when navigating to dashboard
+  useEffect(() => {
+    if (location.pathname === '/dashboard') {
+      setRefreshKey((prev) => prev + 1);
+    }
+  }, [location.pathname]);
 
   return (
     <div className="space-y-6">
@@ -15,7 +25,7 @@ export const DashboardPage = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TotpStatus />
+        <TotpStatus key={refreshKey} />
 
         <Card title="Quick Actions">
           <div className="space-y-3">

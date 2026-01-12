@@ -1,4 +1,3 @@
-import { QRCodeSVG } from 'qrcode.react';
 import { useState } from 'react';
 import { Button } from '../common/Button';
 import toast from 'react-hot-toast';
@@ -20,7 +19,12 @@ export const QRCodeDisplay = ({ qrCode, secret }: QRCodeDisplayProps) => {
     <div className="space-y-4">
       <div className="flex flex-col items-center">
         <div className="bg-white p-4 rounded-lg border-2 border-gray-200">
-          <QRCodeSVG value={qrCode} size={256} />
+          <img
+            src={qrCode}
+            alt="TOTP QR Code"
+            className="w-64 h-64"
+            style={{ imageRendering: 'crisp-edges' }}
+          />
         </div>
         <p className="mt-4 text-sm text-gray-600 text-center">
           Scan this QR code with your authenticator app

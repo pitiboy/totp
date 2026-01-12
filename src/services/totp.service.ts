@@ -193,7 +193,7 @@ export class TotpService {
   static getStatus(userId: number): { enabled: boolean; enabledAt: string | null } {
     const totpSecret = TotpSecretModel.findByUserId(userId);
     return {
-      enabled: totpSecret?.enabled === true,
+      enabled: !!totpSecret?.enabled, // Convert SQLite integer (0/1) to boolean
       enabledAt: totpSecret?.enabled_at || null,
     };
   }

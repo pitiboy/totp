@@ -85,7 +85,7 @@ export class AuthService {
    */
   static hasTotpEnabled(userId: number): boolean {
     const totpSecret = TotpSecretModel.findByUserId(userId);
-    return totpSecret?.enabled === true;
+    return !!totpSecret?.enabled; // Convert SQLite integer (0/1) to boolean
   }
 }
 
