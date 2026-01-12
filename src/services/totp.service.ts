@@ -29,6 +29,7 @@ export class TotpService {
    */
   static async generateQRCode(secret: string, username: string, email: string): Promise<string> {
     const otpauth = authenticator.keyuri(username, TOTP_ISSUER, secret);
+    console.log('secret:', secret, 'otpauth:', otpauth);
     const qrCode = await QRCode.toDataURL(otpauth);
     return qrCode;
   }
@@ -237,7 +238,6 @@ export class TotpService {
    * Hash backup codes with bcrypt
    */
   private static async hashBackupCodes(codes: string[]): Promise<string[]> {
-    return Promise.all(codes.map((code) => bcrypt.hash(code, BCRYPT_ROUNDS)));
+    return Promise.all(codes.map(code => bcrypt.hash(code, BCRYPT_ROUNDS)));
   }
 }
-
