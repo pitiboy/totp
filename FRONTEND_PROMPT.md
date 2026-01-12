@@ -1,19 +1,20 @@
 # Frontend Development Prompt for TOTP PoC
 
 Create a complete React frontend application for the TOTP (Time-based One-Time Password) Proof of Concept backend. The backend API is already implemented and running on `http://localhost:3000/api`.
+Handle it like a monorepo based on the best possible monorepo management tool of you preference.
 
 ## Tech Stack Requirements
 
 - **Framework**: React 18.x with TypeScript
 - **Build Tool**: Vite
 - **Routing**: React Router v6
-- **State Management**: React Context API or Zustand (prefer Context API for simplicity)
+- **State Management**: Jotai
 - **HTTP Client**: Axios or fetch API
-- **UI Library**: Tailwind CSS (or Material-UI / Chakra UI)
+- **UI Library**: Tailwind CSS
 - **Form Handling**: React Hook Form with validation
 - **QR Code Display**: qrcode.react or similar library
 - **Notifications**: react-hot-toast or react-toastify
-- **Icons**: react-icons or heroicons
+- **Icons**: react-icons
 
 ## Project Structure
 
@@ -78,6 +79,7 @@ frontend/
 ### 1. Authentication Flow
 
 #### Registration Page
+
 - Form fields: username, email, password, confirm password
 - Client-side validation:
   - Username: 3-20 characters, alphanumeric, underscores, hyphens
@@ -89,6 +91,7 @@ frontend/
 - Show loading state during submission
 
 #### Login Page
+
 - Form fields: username, password
 - Handle two response types:
   - If TOTP not enabled: Redirect to dashboard with JWT token
@@ -98,6 +101,7 @@ frontend/
 - Link to registration page
 
 #### 2FA Login Page/Component
+
 - Form field: 6-digit TOTP code input
 - Auto-focus and format input (6 digits only)
 - Display countdown timer for code expiration (5 minutes)
@@ -108,41 +112,44 @@ frontend/
 ### 2. TOTP Management
 
 #### TOTP Setup Flow
+
 - **Step 1: Generate Setup**
   - Button to start TOTP setup
   - Display QR code image (from base64 response)
   - Show secret as text (with copy button)
   - Display backup codes in a secure, copyable format
   - Instructions: "Scan QR code with your authenticator app"
-  
 - **Step 2: Verify Code**
   - Input field for 6-digit TOTP code
   - Verify button
   - Show success/error feedback
-  
 - **Step 3: Enable TOTP**
   - Confirm button to enable TOTP
   - Final verification with TOTP code
   - Success message and redirect
 
 #### TOTP Status Display
+
 - Show current TOTP status (enabled/disabled)
 - If enabled: Show enabled date
 - Button to disable TOTP (with password confirmation)
 - Button to regenerate backup codes (with password confirmation)
 
 #### TOTP Disable Flow
+
 - Password confirmation modal/form
 - Confirm disable action
 - Show success message
 
 #### Backup Codes Management
+
 - Display current backup codes (if available)
 - "Regenerate" button (requires password)
 - Warning: "Old codes will be invalidated"
 - Show new codes in a secure, copyable format
 
 ### 3. Dashboard/Home Page
+
 - Welcome message with username
 - TOTP status card:
   - Current status (enabled/disabled)
@@ -152,6 +159,7 @@ frontend/
 - Logout button
 
 ### 4. Protected Routes
+
 - Implement route protection
 - Redirect to login if not authenticated
 - Store JWT token in localStorage or httpOnly cookie
@@ -161,6 +169,7 @@ frontend/
 ## API Integration
 
 ### Base Configuration
+
 - Base URL: `http://localhost:3000/api`
 - All requests include proper headers
 - Handle CORS if needed
@@ -216,6 +225,7 @@ frontend/
 ## UI/UX Requirements
 
 ### Design Principles
+
 - Clean, modern interface
 - Mobile-responsive design
 - Accessible (WCAG 2.1 AA compliance)
@@ -224,6 +234,7 @@ frontend/
 - Success/error notifications (toast messages)
 
 ### Color Scheme
+
 - Primary: Blue or Green (for actions)
 - Success: Green
 - Error: Red
@@ -231,6 +242,7 @@ frontend/
 - Neutral: Gray scale
 
 ### Components Styling
+
 - Consistent button styles (primary, secondary, danger)
 - Form inputs with labels and error states
 - Cards for grouping content
@@ -239,6 +251,7 @@ frontend/
 - Toast notifications
 
 ### User Experience
+
 - Clear navigation between pages
 - Breadcrumbs or back buttons where appropriate
 - Confirmation dialogs for destructive actions
@@ -249,6 +262,7 @@ frontend/
 ## State Management
 
 ### Auth Context
+
 - User information
 - Authentication status
 - Token management
@@ -256,6 +270,7 @@ frontend/
 - Auto-logout on token expiration
 
 ### TOTP State
+
 - Current TOTP status
 - Setup flow state (step tracking)
 - Temporary secret storage (during setup)
@@ -350,4 +365,3 @@ frontend/
 - Follow React best practices and hooks patterns
 
 Create a production-ready frontend that allows complete testing of all TOTP functionality from user registration through 2FA login and TOTP management.
-
