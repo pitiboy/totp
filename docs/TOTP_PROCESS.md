@@ -2,7 +2,17 @@
 
 ## Introduction
 
-TOTP (Time-based One-Time Password) is a two-factor authentication (2FA) mechanism that adds an extra layer of security to user accounts. This implementation uses the **RFC 6238** standard, which generates time-based one-time passwords that change every 30 seconds.
+## Why Multi-Factor Authentication (MFA)
+
+Multi-Factor Authentication (MFA) is a security process that requires users to provide two or more independent credentials to verify their identity. The main rationale is to greatly increase account security, reducing the risk of unauthorized access resulting from compromised passwords. Even if an attacker acquires a user's password (through phishing, brute force, or data breaches), they would still need the additional verification factor—such as a code generated on the user's device—to access the account.
+
+MFA helps protect sensitive data, prevents account takeovers, and mitigates the impact of common attack vectors like stolen credentials.
+
+### Mandatory Conditions for Secure MFA Implementation
+
+- **Something the user knows**: e.g., a password or PIN
+- **Something the user has**: e.g., a physical device generating TOTP/HOTP codes (authenticator app, hardware token, etc.) or receiving push notifications
+- **Something the user is**: e.g., biometric attributes
 
 ### HOTP (HMAC-based One-Time Password)
 
@@ -38,7 +48,11 @@ flowchart TD
 - **Resynchronization**: If a valid code is found within the window, the server updates its counter to match the client's position
 - **Security**: The window prevents valid codes from being rejected due to counter desynchronization, while still maintaining security by limiting the acceptable range
 
+---
+
 ### TOTP Time-based One-Time Password
+
+TOTP (Time-based One-Time Password) is a two-factor authentication (2FA) mechanism that adds an extra layer of security to user accounts. This implementation uses the **RFC 6238** standard, which generates time-based one-time passwords that change every 30 seconds.
 
 Requires the user to manually enter a short code generated on a device, which changes every ~30 seconds. It is simple, offline-capable, and resistant to push-fatigue attacks, but adds friction and is vulnerable to phishing if the code is entered into a fake site.
 
@@ -198,11 +212,11 @@ A: The primary fallback is backup codes generated during TOTP setup, allowing lo
   Instead, best practice is to generate a separate, random, and longer-lived token (e.g., valid for 10–15 minutes) for the email link, unrelated to TOTP codes or the TOTP secret. An example of such a link structure would be:  
   `https://your-app.example.com/verify-mfa?token=UNIQUE_EMAIL_TOKEN`
 
-**Q: How should the lost password process affect TOTP MFA? **
+**Q: How should the lost password process affect TOTP MFA?**
 A: During a lost password or recovery process, require users to complete additional MFA if possible (TOTP or a backup code) to confirm their identity before allowing a password change.
 After successful recovery and password change, prompt or require the user to set up a new TOTP secret, and invalidate/disable the previous TOTP registration (and generate new backup codes). This prevents persistence of old MFA factors after recovery, ensuring account security.
 
-**Q: Should the TOTP secret be rotated after a password change or lost password event? **
+**Q: Should the TOTP secret be rotated after a password change or lost password event?**
 A: Yes, it is strongly recommended to rotate (regenerate) the TOTP secret after a password reset caused by a suspected or confirmed compromise, such as a lost password. This ensures that if an attacker had access to both the password and the current TOTP secret, they can no longer access the account after the reset.
 
 **Q: What are the best practices for secret rotation and regeneration?**  
@@ -242,6 +256,8 @@ A: Codes expire after 30 seconds, making replay windows very short. Optionally t
 **Q: Should we implement rate limiting for TOTP verification attempts?**  
 A: Yes, implement rate limiting (e.g., 3 attempts per 15 minutes) to prevent brute force attacks. Lock account temporarily after repeated failures.
 
+---
+
 # Other alternatives and considerations
 
 ## One-tap (push) authentication
@@ -255,10 +271,12 @@ It sends a login request to a trusted device where the user approves it with a s
 - User taps Approve (optionally biometric)
 - Device signs the challenge → access granted
 
-| Aspect              | TOTP              | One-tap (Push)              |
-| ------------------- | ----------------- | --------------------------- |
-| User effort         | Manual code entry | Single tap                  |
-| Offline support     | Yes               | No                          |
-| Phishing resistance | Medium            | High (when challenge-based) |
-| Push-fatigue risk   | None              | Yes (if not mitigated)      |
-| UX                  | Moderate friction | Very smooth                 |
+| Aspect              | TOTP                                           | One-tap (Push)                                                                          |
+| ------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------- |
+| User effort         | Manual code entry                              | Single tap                                                                              |
+| Offline support     | Yes                                            | No                                                                                      |
+| Phishing resistance | Medium                                         | High (when challenge-based)                                                             |
+| Push-fatigue risk   | None                                           | Yes (if not mitigated)                                                                  |
+| UX                  | Moderate friction                              | Very smooth                                                                             |
+| Architecture        | Simple; works with time sync and shared secret | Requires secure device registration, push service, and cryptographic challenge-response |
+| Infra cost          | Low; no extra services required                | Higher; needs push notification service and device management infra                     |
