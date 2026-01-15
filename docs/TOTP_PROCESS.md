@@ -60,6 +60,9 @@ Requires the user to manually enter a short code generated on a device, which ch
 2. **QR Code**: The secret is encoded in a QR code using the `otpauth://` URI scheme
 3. **Authenticator App**: Users scan the QR code with an authenticator app (Google Authenticator, Authy, etc.)
 4. **Code Generation**: The app generates 6-digit codes every 30 seconds based on the current time and secret
+
+<img src="totp.client.jpg" alt="Example TOTP Authenticator App Screenshot" width="300"/>
+
 5. **Verification**: During login, users enter the current code, which is verified against the server's calculation
 
 ```mermaid
@@ -270,6 +273,9 @@ It sends a login request to a trusted device where the user approves it with a s
 - Server sends a push challenge to device
 - User taps Approve (optionally biometric)
 - Device signs the challenge → access granted
+
+  <img src="1tap.desktop.jpg" alt="One-tap authentication approved screen" width="300"/>
+  <img src="1tap.client.jpg" alt="One-tap push authentication device prompt" width="300"/>
 
 | Aspect              | TOTP                                           | One-tap (Push)                                                                          |
 | ------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------- |
